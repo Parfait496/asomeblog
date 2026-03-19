@@ -1,0 +1,19 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+<div class="form-wrap">
+  <div class="form-header">
+    <span class="eyebrow">Editorial</span>
+    <h1>New Article</h1>
+    <p>Share a story worth telling.</p>
+  </div>
+
+  <form class="site-form" action="{% url 'articles:create' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn-submit">Publish Article →</button>
+  </form>
+</div>
+
+{% endblock %}

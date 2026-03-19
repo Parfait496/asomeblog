@@ -1,0 +1,43 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+<div class="section-header">
+  <h2 class="section-title">Latest Articles</h2>
+  <span class="section-count">{{ articles|length }} stor{{ articles|length|pluralize:"y,ies" }}</span>
+</div>
+
+<div class="articles-grid">
+  {% for article in articles %}
+    <article class="article-card {% if forloop.first %}card-featured{% endif %}">
+      {% if article.thumb %}
+      <div class="card-thumb">
+        <img src="{{ article.thumb.url }}" alt="{{ article.title }}">
+        <div class="card-thumb-overlay"></div>
+      </div>
+      {% endif %}
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-category">Article</span>
+          <span class="card-date">{{ article.date|date:"M d, Y" }}</span>
+        </div>
+        <h3 class="card-title">
+          <a href="{% url 'articles:detail' slug=article.slug %}">{{ article.title }}</a>
+        </h3>
+        <p class="card-snippet">{{ article.snippet }}</p>
+        <a href="{% url 'articles:detail' slug=article.slug %}" class="card-readmore">
+          Read more <span class="arrow">→</span>
+        </a>
+      </div>
+    </article>
+  {% empty %}
+    <div class="empty-state">
+      <p>No articles published yet.</p>
+      {% if user.is_authenticated %}
+        <a href="{% url 'articles:create' %}" class="btn-primary">Write the First One</a>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

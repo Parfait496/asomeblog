@@ -1,0 +1,37 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+<div class="detail-wrap">
+
+  <a href="{% url 'articles:list' %}" class="back-link">← Back to Articles</a>
+
+  <article class="article-detail">
+
+    {% if article.thumb %}
+    <div class="detail-hero-img">
+      <img src="{{ article.thumb.url }}" alt="{{ article.title }}">
+    </div>
+    {% endif %}
+
+    <div class="detail-content">
+      <div class="detail-meta">
+        <span class="card-category">Article</span>
+        <span class="card-date">{{ article.date|date:"F d, Y" }}</span>
+        {% if article.author %}
+          <span class="detail-author">By {{ article.author }}</span>
+        {% endif %}
+      </div>
+
+      <h1 class="detail-title">{{ article.title }}</h1>
+      <div class="detail-rule"></div>
+      <div class="detail-body">
+        <p>{{ article.body }}</p>
+      </div>
+    </div>
+
+  </article>
+
+</div>
+
+{% endblock %}

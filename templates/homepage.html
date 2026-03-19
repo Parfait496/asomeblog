@@ -1,0 +1,50 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <span class="dot"></span> Live Coverage
+    </div>
+    <h1 class="hero-headline">
+      The Stories That<br><em>Define Our Time</em>
+    </h1>
+    <p class="hero-sub">
+      Independent journalism at the intersection of medicine, science, and the world.
+      Trusted by readers who demand more than headlines.
+    </p>
+    <div class="hero-actions">
+      <a href="{% url 'articles:list' %}" class="btn-primary">Read Latest Articles</a>
+      <a href="{% url 'about' %}" class="btn-ghost">About ASOME</a>
+    </div>
+  </div>
+  <div class="hero-decoration">
+    <div class="deco-grid">
+      <div class="deco-block b1"></div>
+      <div class="deco-block b2"></div>
+      <div class="deco-block b3"></div>
+      <div class="deco-block b4"></div>
+    </div>
+  </div>
+</section>
+
+<section class="pillars">
+  <div class="pillar">
+    <span class="pillar-num">01</span>
+    <h3>Medicine</h3>
+    <p>Breaking research, clinical trials, and healthcare policy from the world's leading institutions.</p>
+  </div>
+  <div class="pillar">
+    <span class="pillar-num">02</span>
+    <h3>Science</h3>
+    <p>From quantum physics to climate systems — rigorous reporting on how our universe works.</p>
+  </div>
+  <div class="pillar">
+    <span class="pillar-num">03</span>
+    <h3>World</h3>
+    <p>The global stories that shape societies, economies, and the human experience.</p>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-header">
+      <span class="eyebrow">Welcome back</span>
+      <h1>Log In</h1>
+    </div>
+    <form class="site-form" action="{% url 'accounts:login' %}" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      {% if request.GET.next %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}" />
+      {% endif %}
+      <button type="submit" class="btn-submit">Log In →</button>
+    </form>
+    <p class="auth-switch">No account yet? <a href="{% url 'accounts:signup' %}">Sign Up</a></p>
+  </div>
+</div>
+
+{% endblock %}

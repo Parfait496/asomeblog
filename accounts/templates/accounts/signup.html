@@ -1,0 +1,20 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-header">
+      <span class="eyebrow">Join the newsroom</span>
+      <h1>Create Account</h1>
+    </div>
+    <form class="site-form" action="/accounts/signup/" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn-submit">Create Account →</button>
+    </form>
+    <p class="auth-switch">Already a member? <a href="{% url 'accounts:login' %}">Log In</a></p>
+  </div>
+</div>
+
+{% endblock %}
