@@ -1,2 +1,1 @@
-
-web: gunicorn asomeblog.wsgi
+web: sh build.sh && gunicorn asomeblog.wsgi
