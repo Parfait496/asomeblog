@@ -1,6 +1,6 @@
 {% extends 'base_layout.html' %}
 
-{% load cloudinary %}
+
 
 {% block content %}
 
@@ -46,13 +46,12 @@
       {% endif %}
 
       <!-- ARTICLE VIDEOS -->
-      {% if article.videos.all %}
+{% if article.videos.all %}
 <div class="article-videos">
   {% for vid in article.videos.all %}
   <figure class="media-figure">
-    <video controls>
-      <source src="https://res.cloudinary.com/{{ vid.video.public_id }}.mp4" type="video/mp4">
-      <source src="{% cloudinary_url vid.video resource_type='video' %}" type="video/mp4">
+    <video controls width="100%">
+      <source src="{{ vid.video.url }}" type="video/mp4">
       Your browser does not support video.
     </video>
     {% if vid.caption %}
