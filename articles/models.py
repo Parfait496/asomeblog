@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
 class Article(models.Model):
     title = models.CharField(max_length=100)
@@ -32,7 +33,7 @@ class ArticleImage(models.Model):
 
 class ArticleVideo(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='videos')
-    video = models.FileField(upload_to='article_videos/')
+    video = CloudinaryField('video', resource_type='video', blank=True)
     caption = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
