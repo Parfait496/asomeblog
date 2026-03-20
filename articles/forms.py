@@ -1,7 +1,17 @@
 from django import forms
-from . import models
+from .models import Article, ArticleImage, ArticleVideo
 
-class CreateArticle(forms.ModelForm):
+class ArticleForm(forms.ModelForm):
     class Meta:
-        model = models.Article
-        fields = ["title", "body", "slug", "thumb"]
+        model = Article
+        fields = ['title', 'slug', 'body', 'thumb']
+
+class ArticleImageForm(forms.ModelForm):
+    class Meta:
+        model = ArticleImage
+        fields = ['image', 'caption']
+
+class ArticleVideoForm(forms.ModelForm):
+    class Meta:
+        model = ArticleVideo
+        fields = ['video', 'caption']

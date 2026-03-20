@@ -11,7 +11,33 @@
 
   <form class="site-form" action="{% url 'articles:create' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+
+    <!-- MAIN ARTICLE FIELDS -->
+    <div class="form-section">
+      <div class="form-section-title">Article Details</div>
+      {{ form.as_p }}
+    </div>
+
+    <!-- IMAGES -->
+    <div class="form-section">
+      <div class="form-section-title">Images</div>
+      <p class="form-section-hint">You can select multiple images at once.</p>
+      <label>Images</label>
+      <input type="file" name="images" accept="image/*" multiple>
+      <label>Image Caption (applies to all)</label>
+      <input type="text" name="image_caption" placeholder="Optional caption...">
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="form-section">
+      <div class="form-section-title">Videos</div>
+      <p class="form-section-hint">Supported formats: mp4, webm, ogg.</p>
+      <label>Videos</label>
+      <input type="file" name="videos" accept="video/*" multiple>
+      <label>Video Caption (applies to all)</label>
+      <input type="text" name="video_caption" placeholder="Optional caption...">
+    </div>
+
     <button type="submit" class="btn-submit">Publish Article →</button>
   </form>
 </div>
