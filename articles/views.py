@@ -13,7 +13,7 @@ def article_detail(request, slug):
     return render(request, 'articles/article_detail.html', {'article': article})
 
 @login_required(login_url="/accounts/login/")
-def create(request):
+def article_create(request):
     if request.method == 'POST':
         form = ArticleForm(request.POST, request.FILES)
 
