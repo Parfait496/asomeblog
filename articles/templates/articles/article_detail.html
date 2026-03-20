@@ -3,7 +3,6 @@
 {% block content %}
 
 <div class="detail-wrap">
-
   <a href="{% url 'articles:list' %}" class="back-link">← Back to Articles</a>
 
   <article class="article-detail">
@@ -25,13 +24,44 @@
 
       <h1 class="detail-title">{{ article.title }}</h1>
       <div class="detail-rule"></div>
+
       <div class="detail-body">
         <p>{{ article.body }}</p>
       </div>
+
+      <!-- ARTICLE IMAGES -->
+      {% if article.images.all %}
+      <div class="article-media-grid">
+        {% for img in article.images.all %}
+        <figure class="media-figure">
+          <img src="{{ img.image.url }}" alt="{{ img.caption }}">
+          {% if img.caption %}
+            <figcaption>{{ img.caption }}</figcaption>
+          {% endif %}
+        </figure>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- ARTICLE VIDEOS -->
+      {% if article.videos.all %}
+      <div class="article-videos">
+        {% for vid in article.videos.all %}
+        <figure class="media-figure">
+          <video controls>
+            <source src="{{ vid.video.url }}">
+            Your browser does not support video.
+          </video>
+          {% if vid.caption %}
+            <figcaption>{{ vid.caption }}</figcaption>
+          {% endif %}
+        </figure>
+        {% endfor %}
+      </div>
+      {% endif %}
+
     </div>
-
   </article>
-
 </div>
 
 {% endblock %}
