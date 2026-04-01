@@ -1,0 +1,40 @@
+{% extends 'base_layout.html' %}
+
+{% block content %}
+<div class="detail-wrap">
+  <div class="section-header">
+    <h2 class="section-title">🔖 My Saved Articles</h2>
+    <span class="section-count">{{ bookmarks|length }} saved</span>
+  </div>
+
+  <div class="articles-grid">
+    {% for bm in bookmarks %}
+      <article class="article-card">
+        {% if bm.article.thumb %}
+        <div class="card-thumb">
+          <img src="{{ bm.article.thumb.url }}" alt="{{ bm.article.title }}">
+          <div class="card-thumb-overlay"></div>
+        </div>
+        {% endif %}
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-category">Saved {{ bm.date|date:"M d" }}</span>
+          </div>
+          <h3 class="card-title">
+            <a href="{% url 'articles:detail' slug=bm.article.slug %}">{{ bm.article.title }}</a>
+          </h3>
+          <p class="card-snippet">{{ bm.article.snippet }}</p>
+          <a href="{% url 'articles:detail' slug=bm.article.slug %}" class="card-readmore">
+            Read more <span class="arrow">→</span>
+          </a>
+        </div>
+      </article>
+    {% empty %}
+      <div class="empty-state">
+        <p>You haven't saved any articles yet.</p>
+        <a href="{% url 'articles:list' %}" class="btn-primary">Browse Articles</a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

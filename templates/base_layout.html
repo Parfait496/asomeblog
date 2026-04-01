@@ -31,6 +31,7 @@
         <ul>
           <li><a href="{% url 'articles:list' %}">Articles</a></li>
           {% if user.is_authenticated %}
+          <li><a href="{% url 'articles:bookmarks' %}">🔖 Saved</a></li>
           <li><a href="{% url 'articles:create' %}" class="nav-cta">+ New Article</a></li>
           <li>
             <form class="logout-form" action="{% url 'accounts:logout' %}" method="post">

@@ -1,7 +1,5 @@
 {% extends 'base_layout.html' %}
 
-
-
 {% block content %}
 
 <div class="detail-wrap">
@@ -31,39 +29,136 @@
         <p>{{ article.body }}</p>
       </div>
 
-      <!-- ARTICLE IMAGES -->
       {% if article.images.all %}
       <div class="article-media-grid">
         {% for img in article.images.all %}
         <figure class="media-figure">
           <img src="{{ img.image.url }}" alt="{{ img.caption }}">
-          {% if img.caption %}
-            <figcaption>{{ img.caption }}</figcaption>
-          {% endif %}
+          {% if img.caption %}<figcaption>{{ img.caption }}</figcaption>{% endif %}
         </figure>
         {% endfor %}
       </div>
       {% endif %}
 
-      <!-- ARTICLE VIDEOS -->
-{% if article.videos.all %}
-<div class="article-videos">
-  {% for vid in article.videos.all %}
-  <figure class="media-figure">
-    <video controls width="100%">
-      <source src="{{ vid.video.url }}" type="video/mp4">
-      Your browser does not support video.
-    </video>
-    {% if vid.caption %}
-      <figcaption>{{ vid.caption }}</figcaption>
-    {% endif %}
-  </figure>
-  {% endfor %}
-</div>
-{% endif %}
+      {% if article.videos.all %}
+      <div class="article-videos">
+        {% for vid in article.videos.all %}
+        <figure class="media-figure">
+          <video controls width="100%">
+            <source src="{{ vid.video.url }}" type="video/mp4">
+          </video>
+          {% if vid.caption %}<figcaption>{{ vid.caption }}</figcaption>{% endif %}
+        </figure>
+        {% endfor %}
+      </div>
+      {% endif %}
 
+      <!-- INTERACTION BAR -->
+      <div class="interact-bar">
+        {% if user.is_authenticated %}
+          <button class="interact-btn like-btn {% if user_liked %}liked{% endif %}"
+            data-url="{% url 'articles:toggle_like' slug=article.slug %}">
+            <span class="interact-icon">{% if user_liked %}♥{% else %}♡{% endif %}</span>
+            <span class="like-count">{{ article.like_count }}</span>
+            <span class="interact-text">{{ article.like_count|pluralize:"Like,Likes" }}</span>
+          </button>
+          <button class="interact-btn bookmark-btn {% if user_bookmarked %}bookmarked{% endif %}"
+            data-url="{% url 'articles:toggle_bookmark' slug=article.slug %}">
+            <span class="interact-icon">{% if user_bookmarked %}🔖{% else %}🏷{% endif %}</span>
+            <span class="interact-text">{% if user_bookmarked %}Saved{% else %}Save{% endif %}</span>
+          </button>
+        {% else %}
+          <a href="{% url 'accounts:login' %}" class="interact-btn">
+            <span class="interact-icon">♡</span>
+            <span>{{ article.like_count }} Likes</span>
+          </a>
+          <a href="{% url 'accounts:login' %}" class="interact-btn">
+            <span class="interact-icon">🏷</span>
+            <span>Save</span>
+          </a>
+        {% endif %}
+        <div class="interact-btn no-action">
+          <span class="interact-icon">💬</span>
+          <span>{{ article.comment_count }}</span>
+          <span class="interact-text">Comments</span>
+        </div>
+      </div>
     </div>
   </article>
+
+  <!-- COMMENTS SECTION -->
+  <section class="comments-section">
+    <h2 class="comments-heading">
+      <span>Discussion</span>
+      <span class="comments-count-pill">{{ article.comment_count }}</span>
+    </h2>
+
+    {% if user.is_authenticated %}
+    <form class="comment-form" method="POST" action="{% url 'articles:add_comment' slug=article.slug %}">
+      {% csrf_token %}
+      <div class="comment-form-inner">
+        <div class="comment-avatar">{{ user.username|first|upper }}</div>
+        <div class="comment-field-wrap">
+          {{ comment_form.body }}
+          <button type="submit" class="comment-submit">Post Comment</button>
+        </div>
+      </div>
+    </form>
+    {% else %}
+    <div class="comment-login-prompt">
+      <p>Want to join the discussion? <a href="{% url 'accounts:login' %}">Log in</a> to leave a comment.</p>
+    </div>
+    {% endif %}
+
+    <div class="comment-list">
+      {% for comment in comments %}
+      <div class="comment-item">
+        <div class="comment-avatar">{{ comment.author.username|first|upper }}</div>
+        <div class="comment-content">
+          <div class="comment-header">
+            <span class="comment-author">{{ comment.author.username }}</span>
+            <span class="comment-date">{{ comment.date|date:"M d, Y · H:i" }}</span>
+          </div>
+          <p class="comment-body">{{ comment.body }}</p>
+          {% if user == comment.author or user.is_staff %}
+          <form method="POST" action="{% url 'articles:delete_comment' comment_id=comment.id %}" class="delete-comment-form">
+            {% csrf_token %}
+            <button type="submit" class="comment-delete-btn" onclick="return confirm('Delete this comment?')">× Delete</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+      {% empty %}
+      <div class="no-comments"><p>No comments yet. Be the first to share your thoughts!</p></div>
+      {% endfor %}
+    </div>
+  </section>
 </div>
 
+<script>
+const csrfToken = '{{ csrf_token }}';
+document.querySelectorAll('.like-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const res = await fetch(btn.dataset.url, {
+      method: 'POST', headers: { 'X-CSRFToken': csrfToken }
+    });
+    const data = await res.json();
+    btn.classList.toggle('liked', data.liked);
+    btn.querySelector('.interact-icon').textContent = data.liked ? '♥' : '♡';
+    btn.querySelector('.like-count').textContent = data.count;
+    btn.querySelector('.interact-text').textContent = data.count === 1 ? 'Like' : 'Likes';
+  });
+});
+document.querySelectorAll('.bookmark-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const res = await fetch(btn.dataset.url, {
+      method: 'POST', headers: { 'X-CSRFToken': csrfToken }
+    });
+    const data = await res.json();
+    btn.classList.toggle('bookmarked', data.bookmarked);
+    btn.querySelector('.interact-icon').textContent = data.bookmarked ? '🔖' : '🏷';
+    btn.querySelector('.interact-text').textContent = data.bookmarked ? 'Saved' : 'Save';
+  });
+});
+</script>
 {% endblock %}

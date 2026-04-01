@@ -21,6 +21,45 @@ class Article(models.Model):
     def snippet(self):
         return self.body[:50]+'...'
 
+    def like_count(self):
+        return self.likes.count()
+
+    def comment_count(self):
+        return self.comments.count()
+
+
+class Comment(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    body = models.TextField(max_length=1000)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comment by {self.author} on {self.article.title}"
+
+
+class Like(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('article', 'user')
+
+    def __str__(self):
+        return f"{self.user} likes {self.article.title}"
+
+
+class Bookmark(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='bookmarks')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('article', 'user')
+
+    def __str__(self):
+        return f"{self.user} bookmarked {self.article.title}"
+
 
 class ArticleImage(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='images')
